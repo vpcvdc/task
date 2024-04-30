@@ -13,6 +13,7 @@
     <script src="js/all.min.js"></script>
     <link href="css/all.min.css" rel="stylesheet" />
     <script src="js/sweetalert2@11.js"></script>
+    <script src="js/traverse.js"></script>
 </head>
 
 <body>
@@ -35,13 +36,19 @@
                 </ul>
             </div>
             <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="btn-export" onclick="Swal.fire({ title: 'Export',
+                <!-- <div class="btn-export" onclick="Swal.fire({ title: 'Export',
           html: '<pre><code>'+JSON.stringify(editor.export(), null,4)+'</code></pre>'
           })">
                     Export
-                </div>
+                </div> -->
                 <div class="btn-clear" onclick="editor.clearModuleSelected()">
                     Clear
+                </div>
+                <!-- <div class="btn-build" onclick="traverse(editor.export(),map,componentsJSON)">
+                    Build
+                </div> -->
+                <div class="btn-export" onclick="publish(traverse(editor.export(),map,componentsJSON))">
+                    Publish
                 </div>
                 <div class="btn-lock">
                     <i id="lock" class="fas fa-lock" onclick="editor.editor_mode='fixed'; changeMode('lock');"></i>
@@ -61,6 +68,36 @@
 
 
 <script>
+
+    function publish(content) {
+
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                Swal.fire("Saved!", "", "success");
+            } else if (result.isDenied) {
+                Swal.fire("Changes are not saved", "", "info");
+            }
+        });
+
+        Swal.fire({
+            html: `<pre><code>${JSON.stringify(content, null, 4)}</code></pre>`,
+            width: 'auto',
+            confirmButtonText: 'Copy',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigator.clipboard.writeText(JSON.stringify(content));
+            }
+        })
+    }
+
+
     var map = new Map();
 
     //Render drawflow editor
@@ -73,7 +110,6 @@
         id = Number(id);
         if (map.has(id)) {
             map.delete(id)
-            console.log(map,'omg')
         }
     });
 
@@ -106,6 +142,13 @@
                         }
                     ]
                 }
+            },
+            action: (model) => {
+                model["name"] = "Resources";
+                return model;
+
+
+
             }
         },
         {
@@ -115,11 +158,20 @@
             out: 1,
             model: {
                 default: {
-                    File: "",
+                    ReadFile: "",
                     Type: "",
                     Skill: "",
                     SkillTip: ""
                 }
+            }
+            ,
+            action: (model) => {
+
+                model["name"] = "ReadFile";
+                return model;
+
+
+
             }
         },
         {
@@ -129,13 +181,22 @@
             out: 1,
             model: {
                 default: {
+
+                    "File": "",
+
                     Extract: [
-                        {
-                            File: "",
-                            Description: ""
-                        }
+
+
                     ]
                 }
+            },
+            action: (model) => {
+                model["name"] = "Extract";
+
+                return model;
+
+
+
             }
         },
         {
@@ -145,13 +206,20 @@
             out: 1,
             model: {
                 default: {
-                    Analyze: [
+                    FileNames: [
                         {
-                            File: "",
-                            Description: ""
+                            FileName: "",
+
                         }
                     ]
                 }
+            },
+            action: (model) => {
+                model["name"] = "Analyze";
+                return model;
+
+
+
             }
         },
         {
@@ -161,12 +229,17 @@
             out: 2,
             model: {
                 default: {
-                    Decision: [
-                        {
-                            Condition: ""
-                        }
-                    ]
+
+                    Condition: ""
+
                 }
+            },
+            action: (model) => {
+                model["name"] = "Decision";
+                return model;
+
+
+
             }
         },
         {
@@ -179,6 +252,14 @@
                     Description: "",
                     Notes: ""
                 }
+            },
+            action: (model) => {
+                model["name"] = "WriteEmail";
+
+                return model;
+
+
+
             }
         },
         {
@@ -188,11 +269,19 @@
             out: 1,
             model: {
                 default: {
-                    File: "",
+                    SaveFile: "",
                     Format: "",
                     Skill: "",
                     SkillTip: ""
                 }
+            },
+            action: (model) => {
+
+                model["name"] = "SaveFile";
+                return model;
+
+
+
             }
         }
     ]
@@ -325,7 +414,9 @@
                             }
                             else {
                                 _te += `<div class="sp"><input type="text" name="index" data-id="${id}" data-objname="${x}" data-rowindex="${index}" value="${element}"></div>`
-                                _template += `<fieldset class="fs">${_te}</fieldset>`
+                                _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`
+                                // _template += `<fieldset class="fs">${_te}</fieldset>`
+                                _template += `${_te}`
                                 _te = ''
                             }
                         }
@@ -351,7 +442,12 @@
             if (map.has(id)) {
                 let obj = map.get(id);
                 let _component = componentsJSON.find((x) => x.name == obj.componentName)
-                obj.data[objname].push(JSON.parse(JSON.stringify(_component.model.default[objname][0])))
+                if (_component.model.default[objname].length == 0) {
+                    obj.data[objname].push("")
+                }
+                else {
+                    obj.data[objname].push(JSON.parse(JSON.stringify(_component.model.default[objname][0])))
+                }
                 generateTemplate(id, obj.componentName)
                 obj = map.get(id);
                 document.querySelector("aside").innerHTML = obj.template;
@@ -371,7 +467,6 @@
                 generateTemplate(id, obj.componentName)
                 obj = map.get(id);
                 document.querySelector("aside").innerHTML = obj.template;
-                console.log(map, 'im called')
             }
         }
     }
@@ -392,7 +487,12 @@
                     let _component = componentsJSON.find((x) => x.name == obj.componentName)
                     //Check it is an array
                     if (Array.isArray(_component.model.default[objname])) {
-                        obj.data[objname][Number(rowindex)][name] = value
+                        if (name == "index") {
+                            obj.data[objname][Number(rowindex)] = value
+                        }
+                        else {
+                            obj.data[objname][Number(rowindex)][name] = value
+                        }
                     }
                     else {
                         obj.data = { ...obj.data, [name]: value };

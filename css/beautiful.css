@@ -112,6 +112,21 @@ aside {
   font-weight: bold;
 }
 
+.btn-build {
+  float: right;
+  position: absolute;
+  top: 10px;
+  right: 151px;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #0e5ba3;
+  background: #4ea9ff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 5;
+}
+
 .btn-export {
   float: right;
   position: absolute;
@@ -131,7 +146,8 @@ aside {
   float: right;
   position: absolute;
   top: 10px;
-  right: 85px;
+  /* right: 85px; */
+  right: 90px;
   color: white;
   font-weight: bold;
   border: 1px solid #96015b;
