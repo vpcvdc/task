@@ -141,14 +141,21 @@
                             FilePath: ""
                         }
                     ]
-                }
+                },
+                design: [
+                    {
+                        name: "Description",
+                        type: "text"
+                    },
+                    {
+                        name: "FilePath",
+                        type: "text"
+                    }
+                ]
             },
             action: (model) => {
                 model["name"] = "Resources";
                 return model;
-
-
-
             }
         },
         {
@@ -162,16 +169,30 @@
                     Type: "",
                     Skill: "",
                     SkillTip: ""
-                }
+                },
+                design: [
+                    {
+                        name: "ReadFile",
+                        type: "text"
+                    },
+                    {
+                        name: "Type",
+                        type: "text"
+                    },
+                    {
+                        name: "Skill",
+                        type: "text"
+                    },
+                    {
+                        name: "SkillTip",
+                        type: "textarea"
+                    }
+                ]
             }
             ,
             action: (model) => {
-
                 model["name"] = "ReadFile";
                 return model;
-
-
-
             }
         },
         {
@@ -181,22 +202,20 @@
             out: 1,
             model: {
                 default: {
-
-                    "File": "",
-
+                    File: "",
                     Extract: [
-
-
                     ]
-                }
+                },
+                design: [
+                    {
+                        name: "File",
+                        type: "text"
+                    }
+                ]
             },
             action: (model) => {
                 model["name"] = "Extract";
-
                 return model;
-
-
-
             }
         },
         {
@@ -209,17 +228,19 @@
                     FileNames: [
                         {
                             FileName: "",
-
                         }
                     ]
-                }
+                },
+                design: [
+                    {
+                        name: "FileName",
+                        type: "text"
+                    }
+                ]
             },
             action: (model) => {
                 model["name"] = "Analyze";
                 return model;
-
-
-
             }
         },
         {
@@ -229,17 +250,18 @@
             out: 2,
             model: {
                 default: {
-
                     Condition: ""
-
-                }
+                },
+                design: [
+                    {
+                        name: "Condition",
+                        type: "text"
+                    }
+                ]
             },
             action: (model) => {
                 model["name"] = "Decision";
                 return model;
-
-
-
             }
         },
         {
@@ -251,15 +273,21 @@
                 default: {
                     Description: "",
                     Notes: ""
-                }
+                },
+                design: [
+                    {
+                        name: "Description",
+                        type: "text"
+                    },
+                    {
+                        name: "Notes",
+                        type: "textarea"
+                    }
+                ]
             },
             action: (model) => {
                 model["name"] = "WriteEmail";
-
                 return model;
-
-
-
             }
         },
         {
@@ -273,15 +301,29 @@
                     Format: "",
                     Skill: "",
                     SkillTip: ""
-                }
+                },
+                design: [
+                    {
+                        name: "SaveFile",
+                        type: "text"
+                    },
+                    {
+                        name: "Format",
+                        type: "text"
+                    },
+                    {
+                        name: "Skill",
+                        type: "text"
+                    },
+                    {
+                        name: "SkillTip",
+                        type: "textarea"
+                    }
+                ]
             },
             action: (model) => {
-
                 model["name"] = "SaveFile";
                 return model;
-
-
-
             }
         }
     ]
@@ -387,6 +429,7 @@
             _template = ''
             model = {}
             let _keys = component.model.default
+            let _design = component.model.design
             Object.keys(_keys).forEach((x) => {
                 //Check map has id
                 let obj = null
@@ -405,7 +448,11 @@
                             const element = obj[x][index];
                             if (element && typeof element === 'object' && element.constructor === Object) {
                                 Object.keys(element).forEach((e) => {
-                                    _te += `<div class="sp"><Label>${e}</Label><input type="text" name=${e} data-id="${id}" data-objname="${x}" data-rowindex="${index}" value="${element[e]}"></div>`
+                                    let _type = _design.find((d) => d.name == e)?.type
+                                    if ([null, undefined, "text"].includes(_type))
+                                        _te += `<div class="sp"><Label>${e}</Label><input type="text" name=${e} data-id="${id}" data-objname="${x}" data-rowindex="${index}" value="${element[e]}"/></div>`
+                                    else if (_type == "textarea")
+                                        _te += `<div class="sp"><Label>${e}</Label><textarea rows="4" name=${e} data-id="${id}" data-objname="${x}" data-rowindex="${index}">${element[e]}</textarea></div>`
                                 })
                                 //Add delete button
                                 _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`
@@ -413,7 +460,11 @@
                                 _te = ''
                             }
                             else {
-                                _te += `<div class="sp"><input type="text" name="index" data-id="${id}" data-objname="${x}" data-rowindex="${index}" value="${element}"></div>`
+                                let _type = _design.find((d) => d.name == x)?.type
+                                if ([null, undefined, "text"].includes(_type))
+                                    _te += `<div class="sp"><input type="text" name="index" data-id="${id}" data-objname="${x}" data-rowindex="${index}" value="${element}"/></div>`
+                                else if (_type == "textarea")
+                                    _te += `<div class="sp"><textarea rows="4" name="index" data-id="${id}" data-objname="${x}" data-rowindex="${index}">${element}</textarea></div>`
                                 _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`
                                 // _template += `<fieldset class="fs">${_te}</fieldset>`
                                 _template += `${_te}`
@@ -426,7 +477,11 @@
                 else if (_keys[x] && typeof _keys[x] === 'object' && _keys[x].constructor === Object) { }
                 else {
                     model[x] = obj ? obj[x] : ''
-                    _template += `<div class="sp"><Label>${x}</Label><input type="text" name=${x} data-id="${id}" data-objname="${x}" data-rowindex="0" value="${obj ? obj[x] : ''}"></div>`
+                    let _type = _design.find((d) => d.name == x)?.type
+                                if ([null, undefined, "text"].includes(_type))
+                    _template += `<div class="sp"><Label>${x}</Label><input type="text" name=${x} data-id="${id}" data-objname="${x}" data-rowindex="0" value="${obj ? obj[x] : ''}"/></div>`
+                    else if (_type == "textarea")
+                    _template += `<div class="sp"><Label>${x}</Label><textarea rows="4" name=${x} data-id="${id}" data-objname="${x}" data-rowindex="0">${obj ? obj[x] : ''}</textarea></div>`
                 }
             })
 
