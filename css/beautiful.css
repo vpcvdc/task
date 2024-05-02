@@ -51,16 +51,24 @@ header a {
 
 .wrapper {
   width: 100%;
-  height: calc(100vh - 67px);
+  height: 100vh;
+  /* height: calc(100vh - 67px); */
   display: flex;
 }
 
 .col {
   overflow: auto;
-  width: 300px;
+  width: 150px;
+  /* width: 300px; */
   height: 100%;
   border-right: 1px solid var(--border-color);
   flex: none;
+  display: flex;
+  flex-direction: column;
+}
+
+select{
+  width: 170px;
 }
 
 .col-right {
@@ -72,6 +80,7 @@ aside {
   padding: 4px;
   overflow: auto;
   width: 300px;
+  /* width: 300px; */
   height: 100%;
   border-left: 1px solid var(--border-color);
   flex: none;
