@@ -67,8 +67,9 @@ header a {
   flex-direction: column;
 }
 
-select{
-  width: 170px;
+.sp input, .sp select, .sp textarea{
+  width: 100%;
+  grid-column: span 2 / span 2;
 }
 
 .col-right {
@@ -419,9 +420,8 @@ aside {
 }
 
 .sp {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   margin: 4px 0;
 }

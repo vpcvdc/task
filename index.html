@@ -53,7 +53,7 @@
                 <!-- <div class="btn-build" onclick="traverse(editor.export(),map,componentsJSON)">
                     Build
                 </div> -->
-                <div class="btn-export" onclick="publish(traverse(editor.export(),map,componentsJSON))">
+                <div class="btn-export" onclick="publish(traverse(editor.export(),cookData(),componentsJSON))">
                     Publish
                 </div>
                 <div class="btn-lock">
@@ -76,33 +76,32 @@
 <script>
 
     function publish(content) {
+        window.top.postMessage(content, '*');
+        // Swal.fire({
+        //     title: "Do you want to save the changes?",
+        //     showDenyButton: true,
+        //     showCancelButton: true,
+        //     confirmButtonText: "Save",
+        //     denyButtonText: `Don't save`
+        // }).then((result) => {
+        //     /* Read more about isConfirmed, isDenied below */
+        //     if (result.isConfirmed) {
+        //         Swal.fire("Saved!", "", "success");
+        //     } else if (result.isDenied) {
+        //         Swal.fire("Changes are not saved", "", "info");
+        //     }
+        // });
 
-        Swal.fire({
-            title: "Do you want to save the changes?",
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Save",
-            denyButtonText: `Don't save`
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                Swal.fire("Saved!", "", "success");
-            } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
-            }
-        });
-
-        Swal.fire({
-            html: `<pre><code>${JSON.stringify(content, null, 4)}</code></pre>`,
-            width: 'auto',
-            confirmButtonText: 'Copy',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                navigator.clipboard.writeText(JSON.stringify(content));
-            }
-        })
+        // Swal.fire({
+        //     html: `<pre><code>${JSON.stringify(content, null, 4)}</code></pre>`,
+        //     width: 'auto',
+        //     confirmButtonText: 'Copy',
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         navigator.clipboard.writeText(JSON.stringify(content));
+        //     }
+        // })
     }
-
 
     var map = new Map();
 
@@ -151,11 +150,15 @@
                 design: [
                     {
                         name: "Description",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "FilePath",
-                        type: "text"
+                        type: "browse",
+                        isEmptyVisible: false,
+                        visibility: true
                     }
                 ]
             },
@@ -179,20 +182,28 @@
                 design: [
                     {
                         name: "ReadFile",
-                        type: "text"
+                        type: "browse",
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "Type",
                         type: "select",
-                        items: ["File", "Directory", "Image"]
+                        items: ["File", "Directory", "Image"],
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "Skill",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "SkillTip",
-                        type: "textarea"
+                        type: "textarea",
+                        isEmptyVisible: false,
+                        visibility: false
                     }
                 ]
             }
@@ -216,7 +227,15 @@
                 design: [
                     {
                         name: "File",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
+                    },
+                    {
+                        name: "Extract",
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     }
                 ]
             },
@@ -241,7 +260,9 @@
                 design: [
                     {
                         name: "FileName",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     }
                 ]
             },
@@ -262,7 +283,9 @@
                 design: [
                     {
                         name: "Condition",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     }
                 ]
             },
@@ -284,11 +307,15 @@
                 design: [
                     {
                         name: "Description",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "Notes",
-                        type: "textarea"
+                        type: "textarea",
+                        isEmptyVisible: false,
+                        visibility: true
                     }
                 ]
             },
@@ -312,19 +339,27 @@
                 design: [
                     {
                         name: "SaveFile",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "Format",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "Skill",
-                        type: "text"
+                        type: "text",
+                        isEmptyVisible: false,
+                        visibility: true
                     },
                     {
                         name: "SkillTip",
-                        type: "textarea"
+                        type: "textarea",
+                        isEmptyVisible: false,
+                        visibility: false
                     }
                 ]
             },
@@ -455,7 +490,7 @@
                             const element = obj[x][index];
                             if (element && typeof element === 'object' && element.constructor === Object) {
                                 Object.keys(element).forEach((e) => {
-                                    _template += uitag(id, e, x, index, element[e], _design.find((d) => d.name == e))
+                                    _te += uitag(id, e, x, index, element[e], _design.find((d) => d.name == e))
                                 })
                                 //Add delete button
                                 _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`
@@ -463,7 +498,7 @@
                                 _te = ''
                             }
                             else {
-                                _template += uitag(id, index, x, index, element, _design.find((d) => d.name == x))
+                                _te += uitag(id, 'index', x, index, element, _design.find((d) => d.name == x))
                                 _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`
                                 // _template += `<fieldset class="fs">${_te}</fieldset>`
                                 _template += `${_te}`
@@ -537,7 +572,7 @@
                     let _component = componentsJSON.find((x) => x.name == obj.componentName)
                     //Check it is an array
                     if (Array.isArray(_component.model.default[objname])) {
-                        if (name == "index") {
+                        if (name == 'index') {
                             obj.data[objname][Number(rowindex)] = value
                         }
                         else {
@@ -554,6 +589,68 @@
         );
     }
 
+    function cookData() {
+        var outputMap = new Map()
+        for (let [mk, mv] of map.entries()) {
+            let component = componentsJSON.find((x) => x.name == mv.componentName)
+            if (component) {
+                let _design = component.model.design
+                let _out = {}
+                _out['componentName'] = mv.componentName
+                _out['data'] = {}
+
+                Object.keys(mv.data).forEach((x) => {
+                    if (Array.isArray(mv.data[x])) {
+                        let _ou = []
+                        for (let ai = 0; ai < mv.data[x].length; ai++) {
+                            let ao = mv.data[x][ai];
+                            if (ao && typeof ao === 'object' && ao.constructor === Object) {
+                                let _o = {}
+                                Object.keys(ao).forEach((ak) => {
+                                    let _d = _design.find((d) => d.name == ak)
+                                    if (String(ao[ak]).trim() == '') { if (_d.isEmptyVisible) _o[ak] = ao[ak] }
+                                    else { if (_d.visibility) _o[ak] = ao[ak] }
+                                })
+                                if (Object.keys(_o).length > 0) {
+                                    _ou.push(_o)
+                                }
+                            }
+                            else {
+                                let _d = _design.find((d) => d.name == x)
+                                if (String(ao).trim() == '') { if (_d.isEmptyVisible) _ou.push(ao) }
+                                else {
+                                    if (_d.visibility) {
+                                        _ou.push(ao)
+                                    }
+                                }
+                            }
+                        }
+                        if (_ou.length > 0) {
+                            if (!_out.data.hasOwnProperty(x))
+                                _out.data[x] = []
+                            if (_ou && typeof _ou === 'object' && _ou.constructor === Object)
+                                _out.data[x].push(_ou)
+                            else
+                                _out.data[x] = _ou
+                        }
+                    }
+                    else if (mv.data[x] && typeof mv.data[x] === 'object' && mv.data[x].constructor === Object) { }
+                    else {
+                        let _d = _design.find((d) => d.name == x)
+                        if (String(mv.data[x]).trim() == '') { if (_d.isEmptyVisible) _out['data'][x] = mv.data[x] }
+                        else { if (_d.visibility) _out['data'][x] = mv.data[x] }
+                    }
+                })
+
+                if (Object.keys(_out.data).length > 0) {
+                    outputMap.set(mk, _out)
+                }
+            }
+        }
+        console.log(outputMap, 'adei')
+        return outputMap
+    }
+
     function uitag(id, name, objname, rowindex, value, designobj) {
         if (designobj) {
             switch (designobj?.type) {
@@ -565,18 +662,20 @@
                     return inputtextarea(id, name, objname, rowindex, value, designobj)
                 case "select":
                     return inputselect(id, name, objname, rowindex, value, designobj)
+                case "browse":
+                    return inputbrowse(id, name, objname, rowindex, value, designobj)
             }
         }
     }
 
     function inputtext(id, name, objname, rowindex, value, designobj) {
-        return `<div class="sp"><Label>${name}</Label><input type="text" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}" value="${value}"/></div>`
+        return `<div class="sp"><label>${name == 'index' ? rowindex : name}</label><input type="text" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}" value="${value}"/></div>`
     }
     function inputtextarea(id, name, objname, rowindex, value, designobj) {
-        return `<div class="sp"><Label>${name}</Label><textarea rows="4" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">${value}</textarea></div>`
+        return `<div class="sp"><label>${name}</label><textarea rows="4" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">${value}</textarea></div>`
     }
     function inputselect(id, name, objname, rowindex, value, designobj) {
-        let _out = `<div class="sp"><Label>${name}</Label><select name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">`
+        let _out = `<div class="sp"><label>${name}</label><select name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">`
         for (let i = 0; i < designobj.items.length; i++) {
             if (value == designobj.items[i])
                 _out += `<option value="${designobj.items[i]}" selected>${designobj.items[i]}</option>`
@@ -585,6 +684,9 @@
         }
         _out += `</select></div>`
         return _out
+    }
+    function inputbrowse(id, name, objname, rowindex, value, designobj) {
+        return `<div class="sp"><label>${name}</label><input type="file" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}" value="${value}" /></div>`
     }
 </script>
 
