@@ -88,8 +88,8 @@
   </body>
 
   <script>
-    function publish(data) {
-      window.top.postMessage({ type: "iframe-publish", data }, "*");
+    function publish(content) {
+      window.top.postMessage({ type: "iframe-publish", content }, "*");
       // Swal.fire({
       //     title: "Do you want to save the changes?",
       //     showDenyButton: true,
