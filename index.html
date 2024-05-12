@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -14,93 +13,107 @@
     <link href="css/all.min.css" rel="stylesheet" />
     <script src="js/sweetalert2@11.js"></script>
     <script src="js/traverse.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- <header>
         <h2>Canvas Flow</h2>
     </header> -->
     <div class="wrapper">
-        <div class="col">
-            <!-- <button style="align-self:flex-end">
+      <div class="col">
+        <!-- <button style="align-self:flex-end">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" style="width:20px;align-self:flex-end">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                 </svg>
             </button> -->
-            <!-- <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="dbclick">
+        <!-- <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="dbclick">
                 <i class="fas fa-mouse"></i><span>EMAIL READER</span>
             </div> -->
+      </div>
+      <div class="col-right">
+        <div class="menu">
+          <ul>
+            <li
+              onclick="editor.changeModule('Home'); changeModule(event);"
+              class="selected"
+            >
+              Canvas
+            </li>
+            <li onclick="editor.changeModule('Other'); changeModule(event);">
+              Other Module
+            </li>
+          </ul>
         </div>
-        <div class="col-right">
-            <div class="menu">
-                <ul>
-                    <li onclick="editor.changeModule('Home'); changeModule(event);" class="selected">
-                        Canvas
-                    </li>
-                    <li onclick="editor.changeModule('Other'); changeModule(event);">Other Module</li>
-                </ul>
-            </div>
-            <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <!-- <div class="btn-export" onclick="Swal.fire({ title: 'Export',
+        <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <!-- <div class="btn-export" onclick="Swal.fire({ title: 'Export',
           html: '<pre><code>'+JSON.stringify(editor.export(), null,4)+'</code></pre>'
           })">
                     Export
                 </div> -->
-                <div class="btn-clear" onclick="editor.clearModuleSelected()">
-                    Clear
-                </div>
-                <!-- <div class="btn-build" onclick="traverse(editor.export(),map,componentsJSON)">
+          <div class="btn-clear" onclick="editor.clearModuleSelected()">
+            Clear
+          </div>
+          <!-- <div class="btn-build" onclick="traverse(editor.export(),map,componentsJSON)">
                     Build
                 </div> -->
-                <div class="btn-export" onclick="publish(traverse(editor.export(),cookData(),componentsJSON))">
-                    Publish
-                </div>
-                <div class="btn-lock">
-                    <i id="lock" class="fas fa-lock" onclick="editor.editor_mode='fixed'; changeMode('lock');"></i>
-                    <i id="unlock" class="fas fa-lock-open" onclick="editor.editor_mode='edit'; changeMode('unlock');"
-                        style="display: none"></i>
-                </div>
-                <div class="bar-zoom">
-                    <i class="fas fa-search-minus" onclick="editor.zoom_out()"></i>
-                    <i class="fas fa-search" onclick="editor.zoom_reset()"></i>
-                    <i class="fas fa-search-plus" onclick="editor.zoom_in()"></i>
-                </div>
-            </div>
+          <div
+            class="btn-export"
+            onclick="publish(traverse(editor.export(),cookData(),componentsJSON))"
+          >
+            Publish
+          </div>
+          <div class="btn-lock">
+            <i
+              id="lock"
+              class="fas fa-lock"
+              onclick="editor.editor_mode='fixed'; changeMode('lock');"
+            ></i>
+            <i
+              id="unlock"
+              class="fas fa-lock-open"
+              onclick="editor.editor_mode='edit'; changeMode('unlock');"
+              style="display: none"
+            ></i>
+          </div>
+          <div class="bar-zoom">
+            <i class="fas fa-search-minus" onclick="editor.zoom_out()"></i>
+            <i class="fas fa-search" onclick="editor.zoom_reset()"></i>
+            <i class="fas fa-search-plus" onclick="editor.zoom_in()"></i>
+          </div>
         </div>
-        <aside></aside>
+      </div>
+      <aside></aside>
     </div>
-</body>
+  </body>
 
+  <script>
+    function publish(data) {
+      window.top.postMessage({ type: "iframe-publish", data }, "*");
+      // Swal.fire({
+      //     title: "Do you want to save the changes?",
+      //     showDenyButton: true,
+      //     showCancelButton: true,
+      //     confirmButtonText: "Save",
+      //     denyButtonText: `Don't save`
+      // }).then((result) => {
+      //     /* Read more about isConfirmed, isDenied below */
+      //     if (result.isConfirmed) {
+      //         Swal.fire("Saved!", "", "success");
+      //     } else if (result.isDenied) {
+      //         Swal.fire("Changes are not saved", "", "info");
+      //     }
+      // });
 
-<script>
-
-    function publish(content) {
-        window.top.postMessage(content, '*');
-        // Swal.fire({
-        //     title: "Do you want to save the changes?",
-        //     showDenyButton: true,
-        //     showCancelButton: true,
-        //     confirmButtonText: "Save",
-        //     denyButtonText: `Don't save`
-        // }).then((result) => {
-        //     /* Read more about isConfirmed, isDenied below */
-        //     if (result.isConfirmed) {
-        //         Swal.fire("Saved!", "", "success");
-        //     } else if (result.isDenied) {
-        //         Swal.fire("Changes are not saved", "", "info");
-        //     }
-        // });
-
-        // Swal.fire({
-        //     html: `<pre><code>${JSON.stringify(content, null, 4)}</code></pre>`,
-        //     width: 'auto',
-        //     confirmButtonText: 'Copy',
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         navigator.clipboard.writeText(JSON.stringify(content));
-        //     }
-        // })
+      // Swal.fire({
+      //     html: `<pre><code>${JSON.stringify(content, null, 4)}</code></pre>`,
+      //     width: 'auto',
+      //     confirmButtonText: 'Copy',
+      // }).then((result) => {
+      //     if (result.isConfirmed) {
+      //         navigator.clipboard.writeText(JSON.stringify(content));
+      //     }
+      // })
     }
 
     var map = new Map();
@@ -112,582 +125,629 @@
     editor.start();
 
     editor.on("nodeRemoved", function (id) {
-        id = Number(id);
-        if (map.has(id)) {
-            map.delete(id)
-        }
+      id = Number(id);
+      if (map.has(id)) {
+        map.delete(id);
+      }
     });
 
     editor.on("nodeSelected", function (id) {
-        id = Number(id);
-        if (map.has(id)) {
-            let obj = map.get(id);
-            let _component = componentsJSON.find((x) => x.name == obj.componentName)
-            generateTemplate(id, obj.componentName)
-            obj = map.get(id)
-            document.querySelector("aside").innerHTML = obj.template;
-        }
+      id = Number(id);
+      if (map.has(id)) {
+        let obj = map.get(id);
+        let _component = componentsJSON.find(
+          (x) => x.name == obj.componentName
+        );
+        generateTemplate(id, obj.componentName);
+        obj = map.get(id);
+        document.querySelector("aside").innerHTML = obj.template;
+      }
     });
 
-    inputEventListener()
+    inputEventListener();
 
     //Load Components
     var componentsJSON = [
-        {
-            name: "Resources",
-            displayName: "Resources",
-            in: 1,
-            out: 1,
-            model: {
-                default: {
-                    DocumentLocations: [
-                        {
-                            Description: "",
-                            FilePath: ""
-                        }
-                    ]
-                },
-                design: [
-                    {
-                        name: "Description",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "FilePath",
-                        type: "browse",
-                        isEmptyVisible: false,
-                        visibility: true
-                    }
-                ]
+      {
+        name: "Resources",
+        displayName: "Resources",
+        in: 1,
+        out: 1,
+        model: {
+          default: {
+            DocumentLocations: [
+              {
+                Description: "",
+                FilePath: "",
+              },
+            ],
+          },
+          design: [
+            {
+              name: "Description",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
             },
-            action: (model) => {
-                model["name"] = "Resources";
-                return model;
-            }
-        },
-        {
-            name: "ReadFile",
-            displayName: "Read File",
-            in: 1,
-            out: 1,
-            model: {
-                default: {
-                    ReadFile: "",
-                    Type: "",
-                    Skill: "",
-                    SkillTip: ""
-                },
-                design: [
-                    {
-                        name: "ReadFile",
-                        type: "browse",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "Type",
-                        type: "select",
-                        items: ["File", "Directory", "Image"],
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "Skill",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "SkillTip",
-                        type: "textarea",
-                        isEmptyVisible: false,
-                        visibility: false
-                    }
-                ]
-            }
-            ,
-            action: (model) => {
-                model["name"] = "ReadFile";
-                return model;
-            }
-        },
-        {
-            name: "Extract",
-            displayName: "Extract",
-            in: 1,
-            out: 1,
-            model: {
-                default: {
-                    File: "",
-                    Extract: [
-                    ]
-                },
-                design: [
-                    {
-                        name: "File",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "Extract",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    }
-                ]
+            {
+              name: "FilePath",
+              type: "browse",
+              isEmptyVisible: false,
+              visibility: true,
             },
-            action: (model) => {
-                model["name"] = "Extract";
-                return model;
-            }
+          ],
         },
-        {
-            name: "Analyze",
-            displayName: "Analyze",
-            in: 1,
-            out: 1,
-            model: {
-                default: {
-                    FileNames: [
-                        {
-                            FileName: "",
-                        }
-                    ]
-                },
-                design: [
-                    {
-                        name: "FileName",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    }
-                ]
-            },
-            action: (model) => {
-                model["name"] = "Analyze";
-                return model;
-            }
+        action: (model) => {
+          model["name"] = "Resources";
+          return model;
         },
-        {
-            name: "Decision",
-            displayName: "Decision",
-            in: 1,
-            out: 2,
-            model: {
-                default: {
-                    Condition: ""
-                },
-                design: [
-                    {
-                        name: "Condition",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    }
-                ]
+      },
+      {
+        name: "ReadFile",
+        displayName: "Read File",
+        in: 1,
+        out: 1,
+        model: {
+          default: {
+            ReadFile: "",
+            Type: "",
+            Skill: "",
+            SkillTip: "",
+          },
+          design: [
+            {
+              name: "ReadFile",
+              type: "browse",
+              isEmptyVisible: false,
+              visibility: true,
             },
-            action: (model) => {
-                model["name"] = "Decision";
-                return model;
-            }
+            {
+              name: "Type",
+              type: "select",
+              items: ["File", "Directory", "Image"],
+              isEmptyVisible: false,
+              visibility: true,
+            },
+            {
+              name: "Skill",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+            {
+              name: "SkillTip",
+              type: "textarea",
+              isEmptyVisible: false,
+              visibility: false,
+            },
+          ],
         },
-        {
-            name: "WriteEmail",
-            displayName: "Write Email",
-            in: 1,
-            out: 1,
-            model: {
-                default: {
-                    Description: "",
-                    Notes: ""
-                },
-                design: [
-                    {
-                        name: "Description",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "Notes",
-                        type: "textarea",
-                        isEmptyVisible: false,
-                        visibility: true
-                    }
-                ]
-            },
-            action: (model) => {
-                model["name"] = "WriteEmail";
-                return model;
-            }
+        action: (model) => {
+          model["name"] = "ReadFile";
+          return model;
         },
-        {
-            name: "SaveFile",
-            displayName: "Save File",
-            in: 1,
-            out: 1,
-            model: {
-                default: {
-                    SaveFile: "",
-                    Format: "",
-                    Skill: "",
-                    SkillTip: ""
-                },
-                design: [
-                    {
-                        name: "SaveFile",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "Format",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "Skill",
-                        type: "text",
-                        isEmptyVisible: false,
-                        visibility: true
-                    },
-                    {
-                        name: "SkillTip",
-                        type: "textarea",
-                        isEmptyVisible: false,
-                        visibility: false
-                    }
-                ]
+      },
+      {
+        name: "Extract",
+        displayName: "Extract",
+        in: 1,
+        out: 1,
+        model: {
+          default: {
+            File: "",
+            Extract: [],
+          },
+          design: [
+            {
+              name: "File",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
             },
-            action: (model) => {
-                model["name"] = "SaveFile";
-                return model;
-            }
-        }
-    ]
+            {
+              name: "Extract",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+          ],
+        },
+        action: (model) => {
+          model["name"] = "Extract";
+          return model;
+        },
+      },
+      {
+        name: "Analyze",
+        displayName: "Analyze",
+        in: 1,
+        out: 1,
+        model: {
+          default: {
+            FileNames: [
+              {
+                FileName: "",
+              },
+            ],
+          },
+          design: [
+            {
+              name: "FileName",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+          ],
+        },
+        action: (model) => {
+          model["name"] = "Analyze";
+          return model;
+        },
+      },
+      {
+        name: "Decision",
+        displayName: "Decision",
+        in: 1,
+        out: 2,
+        model: {
+          default: {
+            Condition: "",
+          },
+          design: [
+            {
+              name: "Condition",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+          ],
+        },
+        action: (model) => {
+          model["name"] = "Decision";
+          return model;
+        },
+      },
+      {
+        name: "WriteEmail",
+        displayName: "Write Email",
+        in: 1,
+        out: 1,
+        model: {
+          default: {
+            Description: "",
+            Notes: "",
+          },
+          design: [
+            {
+              name: "Description",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+            {
+              name: "Notes",
+              type: "textarea",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+          ],
+        },
+        action: (model) => {
+          model["name"] = "WriteEmail";
+          return model;
+        },
+      },
+      {
+        name: "SaveFile",
+        displayName: "Save File",
+        in: 1,
+        out: 1,
+        model: {
+          default: {
+            SaveFile: "",
+            Format: "",
+            Skill: "",
+            SkillTip: "",
+          },
+          design: [
+            {
+              name: "SaveFile",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+            {
+              name: "Format",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+            {
+              name: "Skill",
+              type: "text",
+              isEmptyVisible: false,
+              visibility: true,
+            },
+            {
+              name: "SkillTip",
+              type: "textarea",
+              isEmptyVisible: false,
+              visibility: false,
+            },
+          ],
+        },
+        action: (model) => {
+          model["name"] = "SaveFile";
+          return model;
+        },
+      },
+    ];
     async function loadJSON() {
-        // await fetch('http://localhost:8000').then((res) => {
-        //     if (!res.ok) { throw new Error(`HTTP error! Status: ${res.status}`) }
-        //     return res.json()
-        // }).then((data) => {
-        //     componentsJSON = data
-        componentsJSON.forEach(element => {
-            document.getElementsByClassName("col")[0].innerHTML += ` <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node=${element.name}>
+      // await fetch('http://localhost:8000').then((res) => {
+      //     if (!res.ok) { throw new Error(`HTTP error! Status: ${res.status}`) }
+      //     return res.json()
+      // }).then((data) => {
+      //     componentsJSON = data
+      componentsJSON.forEach((element) => {
+        document.getElementsByClassName(
+          "col"
+        )[0].innerHTML += ` <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node=${element.name}>
                 <i class="fas fa-mouse"></i><span>${element.displayName}</span>
-            </div>`
-        });
-        // })
-        //     .catch((error) => console.error('Unable to fetch data:', error))
-
+            </div>`;
+      });
+      // })
+      //     .catch((error) => console.error('Unable to fetch data:', error))
     }
     //Get components json file from server
-    loadJSON()
-
+    loadJSON();
 
     function allowDrop(ev) {
-        ev.preventDefault();
+      ev.preventDefault();
     }
 
     function drag(ev) {
-        if (ev.type === "touchstart") {
-            mobile_item_selec = ev.target
-                .closest(".drag-drawflow")
-                .getAttribute("data-node");
-        } else {
-            ev.dataTransfer.setData("node", ev.target.getAttribute("data-node"));
-        }
+      if (ev.type === "touchstart") {
+        mobile_item_selec = ev.target
+          .closest(".drag-drawflow")
+          .getAttribute("data-node");
+      } else {
+        ev.dataTransfer.setData("node", ev.target.getAttribute("data-node"));
+      }
     }
 
     function drop(ev) {
-        if (ev.type === "touchend") {
-            var parentdrawflow = document
-                .elementFromPoint(
-                    mobile_last_move.touches[0].clientX,
-                    mobile_last_move.touches[0].clientY
-                )
-                .closest("#drawflow");
-            if (parentdrawflow != null) {
-                addNodeToDrawFlow(
-                    mobile_item_selec,
-                    mobile_last_move.touches[0].clientX,
-                    mobile_last_move.touches[0].clientY
-                );
-            }
-            mobile_item_selec = "";
-        } else {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("node");
-            addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+      if (ev.type === "touchend") {
+        var parentdrawflow = document
+          .elementFromPoint(
+            mobile_last_move.touches[0].clientX,
+            mobile_last_move.touches[0].clientY
+          )
+          .closest("#drawflow");
+        if (parentdrawflow != null) {
+          addNodeToDrawFlow(
+            mobile_item_selec,
+            mobile_last_move.touches[0].clientX,
+            mobile_last_move.touches[0].clientY
+          );
         }
+        mobile_item_selec = "";
+      } else {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("node");
+        addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+      }
     }
 
     function addNodeToDrawFlow(name, pos_x, pos_y) {
-        if (editor.editor_mode === "fixed") {
-            return false;
-        }
-        pos_x =
-            pos_x *
-            (editor.precanvas.clientWidth /
-                (editor.precanvas.clientWidth * editor.zoom)) -
-            editor.precanvas.getBoundingClientRect().x *
-            (editor.precanvas.clientWidth /
-                (editor.precanvas.clientWidth * editor.zoom));
-        pos_y =
-            pos_y *
-            (editor.precanvas.clientHeight /
-                (editor.precanvas.clientHeight * editor.zoom)) -
-            editor.precanvas.getBoundingClientRect().y *
-            (editor.precanvas.clientHeight /
-                (editor.precanvas.clientHeight * editor.zoom));
+      if (editor.editor_mode === "fixed") {
+        return false;
+      }
+      pos_x =
+        pos_x *
+          (editor.precanvas.clientWidth /
+            (editor.precanvas.clientWidth * editor.zoom)) -
+        editor.precanvas.getBoundingClientRect().x *
+          (editor.precanvas.clientWidth /
+            (editor.precanvas.clientWidth * editor.zoom));
+      pos_y =
+        pos_y *
+          (editor.precanvas.clientHeight /
+            (editor.precanvas.clientHeight * editor.zoom)) -
+        editor.precanvas.getBoundingClientRect().y *
+          (editor.precanvas.clientHeight /
+            (editor.precanvas.clientHeight * editor.zoom));
 
-        addNode(name, pos_x, pos_y)
+      addNode(name, pos_x, pos_y);
     }
 
     function addNode(name, pos_x, pos_y) {
-        let component = componentsJSON.find((x) => x.name == name)
-        if (component) {
-            let id = editor.addNode(
-                component.name,
-                component.in,
-                component.out,
-                pos_x,
-                pos_y,
-                component.name,
-                {},
-                `<div><div class="title-box"><i class="fas fa-mouse"></i> ${component.name}</div></div>`
-            );
-            generateTemplate(id, component.name)
-        }
+      let component = componentsJSON.find((x) => x.name == name);
+      if (component) {
+        let id = editor.addNode(
+          component.name,
+          component.in,
+          component.out,
+          pos_x,
+          pos_y,
+          component.name,
+          {},
+          `<div><div class="title-box"><i class="fas fa-mouse"></i> ${component.name}</div></div>`
+        );
+        generateTemplate(id, component.name);
+      }
     }
 
     function generateTemplate(id, name) {
-        let component = componentsJSON.find((x) => x.name == name)
-        if (component) {
+      let component = componentsJSON.find((x) => x.name == name);
+      if (component) {
+        _template = "";
+        model = {};
+        let _keys = component.model.default;
+        let _design = component.model.design;
+        Object.keys(_keys).forEach((x) => {
+          //Check map has id
+          let obj = null;
+          if (map.has(id)) {
+            obj = map.get(id)?.data;
+          }
 
-            _template = ''
-            model = {}
-            let _keys = component.model.default
-            let _design = component.model.design
-            Object.keys(_keys).forEach((x) => {
-                //Check map has id
-                let obj = null
-                if (map.has(id)) {
-                    obj = map.get(id)?.data;
+          if (Array.isArray(_keys[x])) {
+            _template += `<fieldset><legend>${x}</legend><button type="button" data-id="${id}" data-objname="${x}" name="Add" onclick="buttonAddClick(event)">Add</button>`;
+            model[x] = [];
+
+            if (obj && obj[x]) {
+              model[x] = obj[x];
+              let _te = "";
+              for (let index = 0; index < obj[x].length; index++) {
+                const element = obj[x][index];
+                if (
+                  element &&
+                  typeof element === "object" &&
+                  element.constructor === Object
+                ) {
+                  Object.keys(element).forEach((e) => {
+                    _te += uitag(
+                      id,
+                      e,
+                      x,
+                      index,
+                      element[e],
+                      _design.find((d) => d.name == e)
+                    );
+                  });
+                  //Add delete button
+                  _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`;
+                  _template += `<fieldset class="fs">${_te}</fieldset>`;
+                  _te = "";
+                } else {
+                  _te += uitag(
+                    id,
+                    "index",
+                    x,
+                    index,
+                    element,
+                    _design.find((d) => d.name == x)
+                  );
+                  _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`;
+                  // _template += `<fieldset class="fs">${_te}</fieldset>`
+                  _template += `${_te}`;
+                  _te = "";
                 }
+              }
+            }
+            _template += `</fieldset>`;
+          } else if (
+            _keys[x] &&
+            typeof _keys[x] === "object" &&
+            _keys[x].constructor === Object
+          ) {
+          } else {
+            model[x] = obj ? obj[x] : "";
+            _template += uitag(
+              id,
+              x,
+              x,
+              0,
+              model[x],
+              _design.find((d) => d.name == x)
+            );
+          }
+        });
 
-                if (Array.isArray(_keys[x])) {
-                    _template += `<fieldset><legend>${x}</legend><button type="button" data-id="${id}" data-objname="${x}" name="Add" onclick="buttonAddClick(event)">Add</button>`
-                    model[x] = []
-
-                    if (obj && obj[x]) {
-                        model[x] = obj[x]
-                        let _te = ''
-                        for (let index = 0; index < obj[x].length; index++) {
-                            const element = obj[x][index];
-                            if (element && typeof element === 'object' && element.constructor === Object) {
-                                Object.keys(element).forEach((e) => {
-                                    _te += uitag(id, e, x, index, element[e], _design.find((d) => d.name == e))
-                                })
-                                //Add delete button
-                                _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`
-                                _template += `<fieldset class="fs">${_te}</fieldset>`
-                                _te = ''
-                            }
-                            else {
-                                _te += uitag(id, 'index', x, index, element, _design.find((d) => d.name == x))
-                                _te += `<button type="button" name="delete" data-id="${id}" data-objname="${x}" data-rowindex="${index}" onclick="buttonDeleteClick(event)">Delete</button>`
-                                // _template += `<fieldset class="fs">${_te}</fieldset>`
-                                _template += `${_te}`
-                                _te = ''
-                            }
-                        }
-                    }
-                    _template += `</fieldset>`
-                }
-                else if (_keys[x] && typeof _keys[x] === 'object' && _keys[x].constructor === Object) { }
-                else {
-                    model[x] = obj ? obj[x] : ''
-                    _template += uitag(id, x, x, 0, model[x], _design.find((d) => d.name == x))
-                }
-            })
-
-            // template = (data, id) => _template
-            map.set(Number(id), { componentName: name, template: _template, data: model })
-        }
+        // template = (data, id) => _template
+        map.set(Number(id), {
+          componentName: name,
+          template: _template,
+          data: model,
+        });
+      }
     }
 
     function buttonAddClick(event) {
-        let id = Number(event.target.dataset.id)
-        let objname = event.target.dataset.objname
-        if (id) {
-            if (map.has(id)) {
-                let obj = map.get(id);
-                let _component = componentsJSON.find((x) => x.name == obj.componentName)
-                if (_component.model.default[objname].length == 0) {
-                    obj.data[objname].push("")
-                }
-                else {
-                    obj.data[objname].push(JSON.parse(JSON.stringify(_component.model.default[objname][0])))
-                }
-                generateTemplate(id, obj.componentName)
-                obj = map.get(id);
-                document.querySelector("aside").innerHTML = obj.template;
-            }
+      let id = Number(event.target.dataset.id);
+      let objname = event.target.dataset.objname;
+      if (id) {
+        if (map.has(id)) {
+          let obj = map.get(id);
+          let _component = componentsJSON.find(
+            (x) => x.name == obj.componentName
+          );
+          if (_component.model.default[objname].length == 0) {
+            obj.data[objname].push("");
+          } else {
+            obj.data[objname].push(
+              JSON.parse(JSON.stringify(_component.model.default[objname][0]))
+            );
+          }
+          generateTemplate(id, obj.componentName);
+          obj = map.get(id);
+          document.querySelector("aside").innerHTML = obj.template;
         }
+      }
     }
 
     function buttonDeleteClick(event) {
-        let id = Number(event.target.dataset.id)
-        let objname = event.target.dataset.objname
-        let rowindex = event.target.dataset.rowindex
-        if (id) {
-            if (map.has(id)) {
-                let obj = map.get(id);
-                let _component = componentsJSON.find((x) => x.name == obj.componentName)
-                obj.data[objname].splice(rowindex, 1)
-                generateTemplate(id, obj.componentName)
-                obj = map.get(id);
-                document.querySelector("aside").innerHTML = obj.template;
-            }
+      let id = Number(event.target.dataset.id);
+      let objname = event.target.dataset.objname;
+      let rowindex = event.target.dataset.rowindex;
+      if (id) {
+        if (map.has(id)) {
+          let obj = map.get(id);
+          let _component = componentsJSON.find(
+            (x) => x.name == obj.componentName
+          );
+          obj.data[objname].splice(rowindex, 1);
+          generateTemplate(id, obj.componentName);
+          obj = map.get(id);
+          document.querySelector("aside").innerHTML = obj.template;
         }
+      }
     }
 
     function inputEventListener() {
-        document.addEventListener(
-            "input",
-            ({
-                target: {
-                    name,
-                    value,
-                    dataset: { id, objname, rowindex },
-                },
-            }) => {
-                id = Number(id);
-                if (map.has(id)) {
-                    const obj = map.get(id);
-                    let _component = componentsJSON.find((x) => x.name == obj.componentName)
-                    //Check it is an array
-                    if (Array.isArray(_component.model.default[objname])) {
-                        if (name == 'index') {
-                            obj.data[objname][Number(rowindex)] = value
-                        }
-                        else {
-                            obj.data[objname][Number(rowindex)][name] = value
-                        }
-                    }
-                    else {
-                        obj.data = { ...obj.data, [name]: value };
-                    }
-                    map.set(id, obj);
-                }
-            },
-            false
-        );
+      document.addEventListener(
+        "input",
+        ({
+          target: {
+            name,
+            value,
+            dataset: { id, objname, rowindex },
+          },
+        }) => {
+          id = Number(id);
+          if (map.has(id)) {
+            const obj = map.get(id);
+            let _component = componentsJSON.find(
+              (x) => x.name == obj.componentName
+            );
+            //Check it is an array
+            if (Array.isArray(_component.model.default[objname])) {
+              if (name == "index") {
+                obj.data[objname][Number(rowindex)] = value;
+              } else {
+                obj.data[objname][Number(rowindex)][name] = value;
+              }
+            } else {
+              obj.data = { ...obj.data, [name]: value };
+            }
+            map.set(id, obj);
+          }
+        },
+        false
+      );
     }
 
     function cookData() {
-        var outputMap = new Map()
-        for (let [mk, mv] of map.entries()) {
-            let component = componentsJSON.find((x) => x.name == mv.componentName)
-            if (component) {
-                let _design = component.model.design
-                let _out = {}
-                _out['componentName'] = mv.componentName
-                _out['data'] = {}
+      var outputMap = new Map();
+      for (let [mk, mv] of map.entries()) {
+        let component = componentsJSON.find((x) => x.name == mv.componentName);
+        if (component) {
+          let _design = component.model.design;
+          let _out = {};
+          _out["componentName"] = mv.componentName;
+          _out["data"] = {};
 
-                Object.keys(mv.data).forEach((x) => {
-                    if (Array.isArray(mv.data[x])) {
-                        let _ou = []
-                        for (let ai = 0; ai < mv.data[x].length; ai++) {
-                            let ao = mv.data[x][ai];
-                            if (ao && typeof ao === 'object' && ao.constructor === Object) {
-                                let _o = {}
-                                Object.keys(ao).forEach((ak) => {
-                                    let _d = _design.find((d) => d.name == ak)
-                                    if (String(ao[ak]).trim() == '') { if (_d.isEmptyVisible) _o[ak] = ao[ak] }
-                                    else { if (_d.visibility) _o[ak] = ao[ak] }
-                                })
-                                if (Object.keys(_o).length > 0) {
-                                    _ou.push(_o)
-                                }
-                            }
-                            else {
-                                let _d = _design.find((d) => d.name == x)
-                                if (String(ao).trim() == '') { if (_d.isEmptyVisible) _ou.push(ao) }
-                                else {
-                                    if (_d.visibility) {
-                                        _ou.push(ao)
-                                    }
-                                }
-                            }
-                        }
-                        if (_ou.length > 0) {
-                            if (!_out.data.hasOwnProperty(x))
-                                _out.data[x] = []
-                            if (_ou && typeof _ou === 'object' && _ou.constructor === Object)
-                                _out.data[x].push(_ou)
-                            else
-                                _out.data[x] = _ou
-                        }
+          Object.keys(mv.data).forEach((x) => {
+            if (Array.isArray(mv.data[x])) {
+              let _ou = [];
+              for (let ai = 0; ai < mv.data[x].length; ai++) {
+                let ao = mv.data[x][ai];
+                if (ao && typeof ao === "object" && ao.constructor === Object) {
+                  let _o = {};
+                  Object.keys(ao).forEach((ak) => {
+                    let _d = _design.find((d) => d.name == ak);
+                    if (String(ao[ak]).trim() == "") {
+                      if (_d.isEmptyVisible) _o[ak] = ao[ak];
+                    } else {
+                      if (_d.visibility) _o[ak] = ao[ak];
                     }
-                    else if (mv.data[x] && typeof mv.data[x] === 'object' && mv.data[x].constructor === Object) { }
-                    else {
-                        let _d = _design.find((d) => d.name == x)
-                        if (String(mv.data[x]).trim() == '') { if (_d.isEmptyVisible) _out['data'][x] = mv.data[x] }
-                        else { if (_d.visibility) _out['data'][x] = mv.data[x] }
+                  });
+                  if (Object.keys(_o).length > 0) {
+                    _ou.push(_o);
+                  }
+                } else {
+                  let _d = _design.find((d) => d.name == x);
+                  if (String(ao).trim() == "") {
+                    if (_d.isEmptyVisible) _ou.push(ao);
+                  } else {
+                    if (_d.visibility) {
+                      _ou.push(ao);
                     }
-                })
-
-                if (Object.keys(_out.data).length > 0) {
-                    outputMap.set(mk, _out)
+                  }
                 }
+              }
+              if (_ou.length > 0) {
+                if (!_out.data.hasOwnProperty(x)) _out.data[x] = [];
+                if (
+                  _ou &&
+                  typeof _ou === "object" &&
+                  _ou.constructor === Object
+                )
+                  _out.data[x].push(_ou);
+                else _out.data[x] = _ou;
+              }
+            } else if (
+              mv.data[x] &&
+              typeof mv.data[x] === "object" &&
+              mv.data[x].constructor === Object
+            ) {
+            } else {
+              let _d = _design.find((d) => d.name == x);
+              if (String(mv.data[x]).trim() == "") {
+                if (_d.isEmptyVisible) _out["data"][x] = mv.data[x];
+              } else {
+                if (_d.visibility) _out["data"][x] = mv.data[x];
+              }
             }
+          });
+
+          if (Object.keys(_out.data).length > 0) {
+            outputMap.set(mk, _out);
+          }
         }
-        console.log(outputMap, 'adei')
-        return outputMap
+      }
+      console.log(outputMap, "adei");
+      return outputMap;
     }
 
     function uitag(id, name, objname, rowindex, value, designobj) {
-        if (designobj) {
-            switch (designobj?.type) {
-                case null:
-                case undefined:
-                case "text":
-                    return inputtext(id, name, objname, rowindex, value, designobj)
-                case "textarea":
-                    return inputtextarea(id, name, objname, rowindex, value, designobj)
-                case "select":
-                    return inputselect(id, name, objname, rowindex, value, designobj)
-                case "browse":
-                    return inputbrowse(id, name, objname, rowindex, value, designobj)
-            }
+      if (designobj) {
+        switch (designobj?.type) {
+          case null:
+          case undefined:
+          case "text":
+            return inputtext(id, name, objname, rowindex, value, designobj);
+          case "textarea":
+            return inputtextarea(id, name, objname, rowindex, value, designobj);
+          case "select":
+            return inputselect(id, name, objname, rowindex, value, designobj);
+          case "browse":
+            return inputbrowse(id, name, objname, rowindex, value, designobj);
         }
+      }
     }
 
     function inputtext(id, name, objname, rowindex, value, designobj) {
-        return `<div class="sp"><label>${name == 'index' ? rowindex : name}</label><input type="text" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}" value="${value}"/></div>`
+      return `<div class="sp"><label>${
+        name == "index" ? rowindex : name
+      }</label><input type="text" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}" value="${value}"/></div>`;
     }
     function inputtextarea(id, name, objname, rowindex, value, designobj) {
-        return `<div class="sp"><label>${name}</label><textarea rows="4" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">${value}</textarea></div>`
+      return `<div class="sp"><label>${name}</label><textarea rows="4" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">${value}</textarea></div>`;
     }
     function inputselect(id, name, objname, rowindex, value, designobj) {
-        let _out = `<div class="sp"><label>${name}</label><select name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">`
-        for (let i = 0; i < designobj.items.length; i++) {
-            if (value == designobj.items[i])
-                _out += `<option value="${designobj.items[i]}" selected>${designobj.items[i]}</option>`
-            else
-                _out += `<option value="${designobj.items[i]}">${designobj.items[i]}</option>`
-        }
-        _out += `</select></div>`
-        return _out
+      let _out = `<div class="sp"><label>${name}</label><select name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}">`;
+      for (let i = 0; i < designobj.items.length; i++) {
+        if (value == designobj.items[i])
+          _out += `<option value="${designobj.items[i]}" selected>${designobj.items[i]}</option>`;
+        else
+          _out += `<option value="${designobj.items[i]}">${designobj.items[i]}</option>`;
+      }
+      _out += `</select></div>`;
+      return _out;
     }
     function inputbrowse(id, name, objname, rowindex, value, designobj) {
-        return `<div class="sp"><label>${name}</label><input type="file" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}" value="${value}" /></div>`
+      return `<div class="sp"><label>${name}</label><input type="file" name=${name} data-id="${id}" data-objname="${objname}" data-rowindex="${rowindex}" value="${value}" /></div>`;
     }
-</script>
-
+  </script>
 </html>
